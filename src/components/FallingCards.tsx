@@ -80,7 +80,7 @@ function mixHex(hex: string, other: [number, number, number], f: number): string
  * The card back in the style's frame colour, darkened toward a real back's
  * depth (more at night, where the frame runs bright); the lattice and the
  * inner frame are the same colour mixed toward white. A hard-coded navy
- * back under the silver or red styles was one of the places a style switch
+ * back under the orange or red styles was one of the places a style switch
  * visibly failed to reach.
  */
 function backSprite(color: string): HTMLCanvasElement {
@@ -139,14 +139,20 @@ type Card = {
   alpha: number
 }
 
-export function FallingCards({ enabled, dark, paintKey }: {
+export function FallingCards({ enabled, dark, paintKey, speed }: {
   enabled: boolean
   dark: boolean
   /** Mode + style, so the back's colour refreshes when either axis turns. */
   paintKey: string
+  /** Fall-speed multiplier from the operator's setting; 1 is the original pace. */
+  speed: number
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const alphaRef = useRef(0.68)
+  // Read at spawn time like the card back: a pace change deals new cards at
+  // the new speed and leaves the ones already falling to finish at theirs,
+  // so the loop never restarts for a settings tweak.
+  const speedRef = useRef(1)
   // Sprites live in a ref so a style switch can swap the back mid-flight:
   // cards already falling keep the back they spawned with, new ones take
   // the new colour, and the loop never restarts.
@@ -166,6 +172,10 @@ export function FallingCards({ enabled, dark, paintKey }: {
   useEffect(() => {
     alphaRef.current = dark ? 0.68 : 0.58
   }, [dark])
+
+  useEffect(() => {
+    speedRef.current = speed > 0 ? speed : 1
+  }, [speed])
 
   useEffect(() => {
     let frame = ""
@@ -199,6 +209,10 @@ export function FallingCards({ enabled, dark, paintKey }: {
     const makeCard = (initial: boolean): Card => {
       const w = 26 + Math.random() * 20 // 26–46 px wide
       const duration = 9 + Math.random() * 7 // 9–16 s top to bottom
+      const pace = speedRef.current
+      // The sway, spin and flip quicken at half the fall's own change, so a
+      // faster rain still reads as paper drifting, not paper hurrying.
+      const rhythm = (1 + pace) / 2
       return {
         face: sprites.faces[Math.floor(Math.random() * sprites.faces.length)],
         // Read at spawn time, so a card dealt after a style switch wears
@@ -207,13 +221,13 @@ export function FallingCards({ enabled, dark, paintKey }: {
         w,
         baseX: Math.random() * Math.max(width, 1),
         y: initial ? Math.random() * (height + 200) - 200 : -140 - Math.random() * 160,
-        vy: (height + 320) / duration,
+        vy: ((height + 320) / duration) * pace,
         swayAmp: 10 + Math.random() * 16,
-        swayFreq: (Math.PI * 2) / (2.5 + Math.random() * 2.5),
+        swayFreq: ((Math.PI * 2) / (2.5 + Math.random() * 2.5)) * rhythm,
         swayPhase: Math.random() * Math.PI * 2,
         rotAmp: 0.35 + Math.random() * 0.3,
-        rotFreq: (Math.PI * 2) / (3.5 + Math.random() * 3),
-        flipFreq: (Math.PI * 2) / (2.2 + Math.random() * 2.3),
+        rotFreq: ((Math.PI * 2) / (3.5 + Math.random() * 3)) * rhythm,
+        flipFreq: ((Math.PI * 2) / (2.2 + Math.random() * 2.3)) * rhythm,
         flipPhase: Math.random() * Math.PI * 2,
         alpha: 0.75 + Math.random() * 0.25,
       }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 /**
  * The door opening: on a full page load (never on in-app navigation, which
@@ -9,10 +9,24 @@ import { useEffect, useState } from "react"
  */
 export function DoorIntro({ enabled, once }: { enabled: boolean; once?: boolean }) {
   const [phase, setPhase] = useState<"hold" | "open" | "fade" | "gone">("hold")
+  // Whether the timeline has ever started. It is also what keeps a
+  // disabled mount from poisoning the intro: App now mounts this
+  // component disabled while the config is in flight, and an earlier
+  // shape of this code answered a disabled mount by jumping straight to
+  // "gone" -- after which the doors could never play when the config
+  // arrived switching them on. Disabled-before-start therefore leaves
+  // the phase untouched; only a switch-off after the start ends it.
+  const startedRef = useRef(false)
 
   useEffect(() => {
-    if (!enabled || phase === "gone") return
+    if (!enabled) {
+      if (startedRef.current) setPhase("gone")
+      return
+    }
+    if (startedRef.current) return
+    startedRef.current = true
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // oxlint-disable-next-line react/set-state-in-effect -- ending the intro is the effect's job: the phase machine is driven from here.
       setPhase("gone")
       return
     }
@@ -22,13 +36,6 @@ export function DoorIntro({ enabled, once }: { enabled: boolean; once?: boolean 
       setTimeout(() => setPhase("gone"), 350 + 1200 + 400),
     ]
     return () => timers.forEach(clearTimeout)
-    // Only the first mount runs the timeline; a config arriving mid-intro and
-    // flipping `enabled` is handled by the render below instead.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (!enabled) setPhase("gone")
   }, [enabled])
 
   // `door_once`: one showing per browser session. The marker is written as
@@ -46,6 +53,7 @@ export function DoorIntro({ enabled, once }: { enabled: boolean; once?: boolean 
     } catch {
       // No session storage to remember with: the doors play as they did.
     }
+    // oxlint-disable-next-line react/set-state-in-effect -- same phase machine: a seen session ends the intro from here.
     if (seen) setPhase("gone")
   }, [enabled, once])
 

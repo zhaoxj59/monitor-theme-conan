@@ -138,7 +138,7 @@ export type StyleName = "conan" | "kid" | "organization"
 
 export const STYLES: { name: StyleName; label: string; desc: string; mark: string }[] = [
   { name: "conan", label: "柯南经典蓝", desc: "侦探蓝 · 案件档案", mark: "🔎" },
-  { name: "kid", label: "怪盗基德落日橙", desc: "落日橙 · 魔术预告", mark: "♠" },
+  { name: "kid", label: "落日橙", desc: "落日橙 · 魔术预告", mark: "♠" },
   { name: "organization", label: "黑衣组织暗夜红", desc: "暗夜红 · 秘密档案", mark: "◈" },
 ]
 

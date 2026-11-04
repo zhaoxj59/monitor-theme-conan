@@ -1,0 +1,297 @@
+/* Scan this app's own source and nothing else. Tailwind's automatic detection
+   walks the whole repository, turning a word in a Rust file or a document into a
+   utility class in the shipped stylesheet: `.filter` and `.transform` were
+   here because api.rs calls `.filter(...)`. Worse than the wasted bytes, it
+   made the build depend on files that have nothing to do with it -- adding an
+   unrelated workflow changed the CSS, and with it the content hash of every
+   asset. */
+@import "tailwindcss" source(none);
+@source "../index.html";
+@source "../src";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Light: the case file's paper -- a pale blue-grey sheet, navy ink, the bowtie
+   red untouched. The semantic hues (green/amber/red/purple) are the same in
+   both modes; only the text tones deepen a step so they stay legible on
+   paper. `:root` carries light and `.dark` the night palette, the scaffold's
+   own arrangement; the page defaults to dark (see the inline script in
+   index.html and `useMode` in App.tsx). */
+:root {
+  color-scheme: light;
+  --radius: 0.625rem;
+  --background: #e8edf5;
+  --foreground: #152a4e;
+  /* Translucent on purpose: cards float over the full-page moon artwork and
+     let it ghost through (the Card shell adds the matching backdrop blur).
+     Kept thin -- nearer glass than paper -- so the panels read as part of
+     the scene rather than stickers pasted on it. */
+  --card: rgba(247, 249, 252, 0.65);
+  --card-foreground: #152a4e;
+  --primary: #162e5a;
+  --primary-foreground: #eef3fa;
+  --secondary: #dbe5f1;
+  --secondary-foreground: #152a4e;
+  --muted: #e0e8f2;
+  --muted-foreground: #5a6d8a;
+  --accent: #dbe5f1;
+  --accent-foreground: #152a4e;
+  --destructive: #c62f35;
+  /* A whisper of a border: low-contrast on purpose, so panels melt into the
+     washed artwork instead of ending in a hard sticker edge. */
+  --border: rgba(71, 106, 152, 0.34);
+  --card-shadow: 0 10px 32px rgba(21, 42, 78, 0.1);
+  /* The home-page case frame: heavy outer line in the theme navy, a hairline
+     inside it. Only NodeCard wears it; detail panels keep the fine border. */
+  --frame: #162e5a;
+  --frame-hover: #2f5d96;
+  --frame-inner: rgba(22, 46, 90, 0.38);
+  --ring: #4a7ebb;
+  --chart-1: #2f5d96;
+  --chart-2: #4773ac;
+  --chart-3: #5f8fce;
+  --chart-4: #8fb8ec;
+  --chart-5: #b9d2f0;
+  --ok: #34c759;
+  --warn: #e8b93c;
+  --online: #34c759;
+  --offline: #5f7a9d;
+  /* Mode-following paint for the custom components: bar tracks, empty strip
+     slots and the cards' printed decorations. */
+  --track: rgba(38, 84, 140, 0.13);
+  --cell-none: rgba(38, 84, 140, 0.16);
+  --deco: #2f5d96;
+  /* Text tones: the semantic hues at a depth paper can carry. */
+  --tone-hot: #c62f35;
+  --tone-warn: #a97a08;
+  --tone-ok: #1f9d4d;
+}
+
+/* `color-scheme` draws the browser's own controls -- the checkbox,
+   scrollbars -- in the dark palette as well. */
+.dark {
+  color-scheme: dark;
+  --background: #081226;
+  --foreground: #e9eff9;
+  /* See :root -- the night card at the same translucency over the artwork. */
+  --card: rgba(11, 26, 51, 0.68);
+  --card-foreground: #e9eff9;
+  --primary: #d7e5f8;
+  --primary-foreground: #0b1a33;
+  --secondary: #152a4e;
+  --secondary-foreground: #e9eff9;
+  --muted: #122441;
+  --muted-foreground: #93a5c0;
+  --accent: #152a4e;
+  --accent-foreground: #e9eff9;
+  --destructive: #f26d6d;
+  /* See :root -- the same low-contrast whisper against the night wash. */
+  --border: rgba(126, 166, 222, 0.24);
+  --card-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
+  /* The case frame at night: a brighter blue, or the navy would vanish
+     into the deep-blue ground. */
+  --frame: #4a7ebb;
+  --frame-hover: #8fb8ec;
+  --frame-inner: rgba(143, 184, 236, 0.32);
+  --ring: #4a7ebb;
+  --chart-1: #8fb8ec;
+  --chart-2: #5f8fce;
+  --chart-3: #4773ac;
+  --chart-4: #33537e;
+  --chart-5: #243c5e;
+  --ok: #34c759;
+  --warn: #e8b93c;
+  --online: #34c759;
+  --offline: #7d92b2;
+  --track: rgba(147, 178, 224, 0.14);
+  --cell-none: rgba(147, 178, 224, 0.18);
+  --deco: #8fb4e8;
+  --tone-hot: #f26d6d;
+  --tone-warn: #e8b93c;
+  --tone-ok: #34c759;
+}
+
+/* The three visual styles, a second axis beside day/night: `data-style` on
+   <html> recolours the accent family -- paper tint, frames, rings, the deco
+   blue -- while the semantic hues (latency cells, state tones) stay put, so
+   a colour keeps its meaning in every style. "conan" is the palette above
+   and needs no block. organization takes its dark values from the 2.0
+   enhancement layer's definitions (bg, panel RGB, line, text, muted,
+   accent verbatim; the card alpha stays this theme's glass .68 rather than
+   the layer's .86-.92, so the styles sit at the same translucency as conan);
+   its light values are derived from the same hues, the layer shipped no
+   light palette. kid started from the layer's values too, but read as a
+   second helping of conan's deep navy, so 2.0.3 re-tuned it into the
+   moonlight silver its name promises: a brighter, greyer steel blue at
+   night, near-white silver by day, so the two blue styles separate at a
+   glance. The dark blocks are written `:root.dark[data-style]`
+   (specificity 0,3,0) against the light blocks' `:root[data-style]`
+   (0,2,0), so a style's night palette beats its own day palette by
+   specificity alone, not by source order -- reordering this file cannot
+   flip a combination. Both blocks of a style set the same properties, so
+   none of the light set leaks into the night. */
+/* kid by day: near-white silver -- a bright steel sheet where conan's day
+   is blue paper. The ink greys a step, the frame is silver steel rather
+   than navy, so the two light styles read apart instantly. */
+:root[data-style="kid"] {
+  --background: #eef1f7;
+  --foreground: #26344c;
+  --card: rgba(252, 253, 255, 0.65);
+  --card-foreground: #26344c;
+  --primary: #43597a;
+  --primary-foreground: #f2f5fa;
+  --secondary: #e2e8f1;
+  --secondary-foreground: #26344c;
+  --muted: #e6ebf3;
+  --muted-foreground: #64748e;
+  --accent: #e2e8f1;
+  --accent-foreground: #26344c;
+  --border: rgba(110, 130, 160, 0.32);
+  --card-shadow: 0 10px 32px rgba(38, 52, 76, 0.1);
+  --frame: #546a8a;
+  --frame-hover: #7188a8;
+  --frame-inner: rgba(84, 106, 138, 0.36);
+  --ring: #93a9c6;
+  --chart-1: #7188a8;
+  --chart-2: #93a9c6;
+  --chart-3: #b3c3d9;
+  --chart-4: #d2dde9;
+  --chart-5: #e6ecf3;
+  --track: rgba(100, 122, 155, 0.13);
+  --cell-none: rgba(100, 122, 155, 0.16);
+  --deco: #7188a8;
+}
+
+:root[data-style="organization"] {
+  --background: #f3e9ea;
+  --foreground: #33161c;
+  --card: rgba(250, 242, 243, 0.65);
+  --card-foreground: #33161c;
+  --primary: #571f28;
+  --primary-foreground: #faedef;
+  --secondary: #efdfe1;
+  --secondary-foreground: #33161c;
+  --muted: #f0e2e4;
+  --muted-foreground: #7d5a62;
+  --accent: #efdfe1;
+  --accent-foreground: #33161c;
+  --border: rgba(140, 70, 85, 0.32);
+  --card-shadow: 0 10px 32px rgba(51, 22, 28, 0.1);
+  --frame: #571f28;
+  --frame-hover: #8c3542;
+  --frame-inner: rgba(87, 31, 40, 0.36);
+  --ring: #b4555f;
+  --chart-1: #8c3542;
+  --chart-2: #a34a57;
+  --chart-3: #bd707c;
+  --chart-4: #d69ba2;
+  --chart-5: #ecd2d6;
+  --track: rgba(140, 70, 85, 0.12);
+  --cell-none: rgba(140, 70, 85, 0.15);
+  --deco: #8c3542;
+}
+
+/* kid at night: moonlight silver -- the ground lifts a full step above
+   conan's #081226 abyss and greys toward steel, the glass goes pale
+   silver-blue, and the frame is bright silver with an ice-white ring.
+   Kid's calling card is the card trick under moonlight, so the surfaces
+   themselves carry the silver. */
+:root.dark[data-style="kid"] {
+  --background: #232e42;
+  --foreground: #f4f7fc;
+  --card: rgba(54, 68, 90, 0.68);
+  --card-foreground: #f4f7fc;
+  --primary: #d7e5f9;
+  --primary-foreground: #1d2a42;
+  --secondary: #3a4a68;
+  --secondary-foreground: #f4f7fc;
+  --muted: #2e3c56;
+  --muted-foreground: #bfcbde;
+  --accent: #3a4a68;
+  --accent-foreground: #f4f7fc;
+  --border: rgba(205, 220, 245, 0.28);
+  --card-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
+  --frame: #c3d4f2;
+  --frame-hover: #e8f0fd;
+  --frame-inner: rgba(227, 238, 252, 0.32);
+  --ring: #e3eefc;
+  --chart-1: #dbe7fa;
+  --chart-2: #aec4e4;
+  --chart-3: #7e99c2;
+  --chart-4: #56709c;
+  --chart-5: #38496a;
+  --track: rgba(210, 226, 248, 0.14);
+  --cell-none: rgba(210, 226, 248, 0.18);
+  --deco: #c9daf3;
+}
+
+:root.dark[data-style="organization"] {
+  --background: #100d13;
+  --foreground: #f8ecee;
+  --card: rgba(34, 20, 27, 0.68);
+  --card-foreground: #f8ecee;
+  --primary: #e56b78;
+  --primary-foreground: #2a0f14;
+  --secondary: #301d24;
+  --secondary-foreground: #f8ecee;
+  --muted: #241419;
+  --muted-foreground: #c6aab0;
+  --accent: #301d24;
+  --accent-foreground: #f8ecee;
+  --border: rgba(220, 89, 105, 0.25);
+  --card-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
+  --frame: #a84452;
+  --frame-hover: #e56b78;
+  --frame-inner: rgba(229, 107, 120, 0.32);
+  --ring: #e56b78;
+  --chart-1: #e56b78;
+  --chart-2: #c24b5a;
+  --chart-3: #9c3745;
+  --chart-4: #6e2833;
+  --chart-5: #47202a;
+  --track: rgba(229, 160, 170, 0.14);
+  --cell-none: rgba(229, 160, 170, 0.18);
+  --deco: #d98a94;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-online: var(--online);
+  --color-offline: var(--offline);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  /* Reserve the scrollbar's width on every page: without it, leaving a route
+     whose content exceeds the fold widens the page. */
+  html { scrollbar-gutter: stable; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* Tabular figures keep live numbers from shifting as they update. */
+.tnum { font-variant-numeric: tabular-nums; }

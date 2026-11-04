@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Monitor</title>
+    <!-- The visitor's mode, applied before first paint so a light-mode choice
+         never flashes dark nor the dark default light. Dark unless the saved
+         choice says light; only the toggle in the page writes the key. -->
+    <script>
+      try {
+        if (localStorage.getItem("conan-mode") !== "light") document.documentElement.classList.add("dark")
+        // The visitor's visual style, likewise before first paint; an
+        // operator default from the theme config can only apply after it
+        // loads, and "conan" is both defaults, so nothing flashes for the
+        // common case. The key matches the name the 2.0 enhancement layer
+        // used, so a choice made there carries over.
+        var s = localStorage.getItem("conan-theme-style")
+        if (s === "kid" || s === "organization") document.documentElement.dataset.style = s
+      } catch (e) {
+        document.documentElement.classList.add("dark")
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

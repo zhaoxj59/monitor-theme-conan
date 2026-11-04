@@ -9,6 +9,13 @@
       "type": "boolean"
     },
     {
+      "default": false,
+      "help": "开启后，开门动画在每个浏览器会话里只播放第一次，之后的刷新和站内返回不再重复播放；关闭则每次打开都播。需先开启上方的开门过渡动画才有作用",
+      "key": "door_once",
+      "label": "开门动画只在首次打开时播放",
+      "type": "boolean"
+    },
+    {
       "default": true,
       "help": "全页背景上缓缓飘落翻转的扑克牌，位于内容卡片之下，不遮挡读数",
       "key": "falling_cards",
@@ -16,8 +23,29 @@
       "type": "boolean"
     },
     {
+      "default": "normal",
+      "help": "扑克牌的下落速度，标准即现行速度；翻面与摇摆的节奏按一半幅度跟随。需先开启上方的扑克牌飘落才有作用",
+      "key": "cards_speed",
+      "label": "扑克牌掉落速度",
+      "options": [
+        {
+          "label": "慢",
+          "value": "slow"
+        },
+        {
+          "label": "标准",
+          "value": "normal"
+        },
+        {
+          "label": "快",
+          "value": "fast"
+        }
+      ],
+      "type": "select"
+    },
+    {
       "default": true,
-      "help": "节点列表上方的总览：节点数、异常（可点开定位到具体服务器）、平均 CPU、总速率、本月总流量、续费合计",
+      "help": "节点列表上方的总览：节点数、异常（可点开定位到具体服务器）、最忙节点、总速率、本月总流量、续费合计",
       "key": "show_summary",
       "label": "显示汇总",
       "type": "boolean"
@@ -33,7 +61,7 @@
           "value": "conan"
         },
         {
-          "label": "怪盗基德月光银",
+          "label": "怪盗基德落日橙",
           "value": "kid"
         },
         {
@@ -76,5 +104,5 @@
   "name": "名侦探柯南 · 案件墙",
   "short": "conan",
   "url": "https://github.com/zhaoxj59/monitor-theme-conan",
-  "version": "3.0.4"
+  "version": "1.2"
 }

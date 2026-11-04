@@ -121,45 +121,48 @@
    the layer's .86-.92, so the styles sit at the same translucency as conan);
    its light values are derived from the same hues, the layer shipped no
    light palette. kid started from the layer's values too, but read as a
-   second helping of conan's deep navy, so 2.0.3 re-tuned it into the
-   moonlight silver its name promises: a brighter, greyer steel blue at
-   night, near-white silver by day, so the two blue styles separate at a
-   glance. The dark blocks are written `:root.dark[data-style]`
+   second helping of conan's deep navy; 2.0.3 re-tuned it into moonlight
+   silver, and 1.2 replaced the silver outright with the amber orange
+   the operator picked from a side-by-side sample -- charcoal brown and
+   amber at night, cream and deep amber by day. The style key stayed
+   `kid` throughout, so a saved pick never noticed either change. The
+   dark blocks are written `:root.dark[data-style]`
    (specificity 0,3,0) against the light blocks' `:root[data-style]`
    (0,2,0), so a style's night palette beats its own day palette by
    specificity alone, not by source order -- reordering this file cannot
    flip a combination. Both blocks of a style set the same properties, so
    none of the light set leaks into the night. */
-/* kid by day: near-white silver -- a bright steel sheet where conan's day
-   is blue paper. The ink greys a step, the frame is silver steel rather
-   than navy, so the two light styles read apart instantly. */
+/* kid by day: cream paper and deep amber -- the style wore moonlight
+   silver until 1.2, when the operator picked the orange sample over it:
+   a warm cream sheet, amber-brown ink and a dark amber frame, as far
+   from conan's blue paper as the red style is. */
 :root[data-style="kid"] {
-  --background: #eef1f7;
-  --foreground: #26344c;
-  --card: rgba(252, 253, 255, 0.65);
-  --card-foreground: #26344c;
-  --primary: #43597a;
-  --primary-foreground: #f2f5fa;
-  --secondary: #e2e8f1;
-  --secondary-foreground: #26344c;
-  --muted: #e6ebf3;
-  --muted-foreground: #64748e;
-  --accent: #e2e8f1;
-  --accent-foreground: #26344c;
-  --border: rgba(110, 130, 160, 0.32);
-  --card-shadow: 0 10px 32px rgba(38, 52, 76, 0.1);
-  --frame: #546a8a;
-  --frame-hover: #7188a8;
-  --frame-inner: rgba(84, 106, 138, 0.36);
-  --ring: #93a9c6;
-  --chart-1: #7188a8;
-  --chart-2: #93a9c6;
-  --chart-3: #b3c3d9;
-  --chart-4: #d2dde9;
-  --chart-5: #e6ecf3;
-  --track: rgba(100, 122, 155, 0.13);
-  --cell-none: rgba(100, 122, 155, 0.16);
-  --deco: #7188a8;
+  --background: #faf3e7;
+  --foreground: #3d2a16;
+  --card: rgba(255, 253, 249, 0.65);
+  --card-foreground: #3d2a16;
+  --primary: #9a5b16;
+  --primary-foreground: #fdf6ec;
+  --secondary: #f3e6d2;
+  --secondary-foreground: #3d2a16;
+  --muted: #f5ead8;
+  --muted-foreground: #8a6d4d;
+  --accent: #f3e6d2;
+  --accent-foreground: #3d2a16;
+  --border: rgba(170, 116, 52, 0.32);
+  --card-shadow: 0 10px 32px rgba(61, 42, 22, 0.1);
+  --frame: #8f5c18;
+  --frame-hover: #b57a24;
+  --frame-inner: rgba(143, 92, 24, 0.36);
+  --ring: #d98a2b;
+  --chart-1: #b57a24;
+  --chart-2: #d98a2b;
+  --chart-3: #eda94e;
+  --chart-4: #f6cd8f;
+  --chart-5: #faead0;
+  --track: rgba(160, 105, 40, 0.13);
+  --cell-none: rgba(160, 105, 40, 0.16);
+  --deco: #c07f27;
 }
 
 :root[data-style="organization"] {
@@ -191,38 +194,36 @@
   --deco: #8c3542;
 }
 
-/* kid at night: moonlight silver -- the ground lifts a full step above
-   conan's #081226 abyss and greys toward steel, the glass goes pale
-   silver-blue, and the frame is bright silver with an ice-white ring.
-   Kid's calling card is the card trick under moonlight, so the surfaces
-   themselves carry the silver. */
+/* kid at night: charcoal brown under amber -- the card glass browns
+   like a lamplit desk, the frame is bright amber and the ring a step
+   hotter, so the night style glows warm where conan's stays cold. */
 :root.dark[data-style="kid"] {
-  --background: #232e42;
-  --foreground: #f4f7fc;
-  --card: rgba(54, 68, 90, 0.68);
-  --card-foreground: #f4f7fc;
-  --primary: #d7e5f9;
-  --primary-foreground: #1d2a42;
-  --secondary: #3a4a68;
-  --secondary-foreground: #f4f7fc;
-  --muted: #2e3c56;
-  --muted-foreground: #bfcbde;
-  --accent: #3a4a68;
-  --accent-foreground: #f4f7fc;
-  --border: rgba(205, 220, 245, 0.28);
+  --background: #2e211a;
+  --foreground: #fdf6ec;
+  --card: rgba(88, 60, 34, 0.68);
+  --card-foreground: #fdf6ec;
+  --primary: #ffd9a3;
+  --primary-foreground: #3a2410;
+  --secondary: #54402c;
+  --secondary-foreground: #fdf6ec;
+  --muted: #453324;
+  --muted-foreground: #e3cdb2;
+  --accent: #54402c;
+  --accent-foreground: #fdf6ec;
+  --border: rgba(255, 190, 110, 0.28);
   --card-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
-  --frame: #c3d4f2;
-  --frame-hover: #e8f0fd;
-  --frame-inner: rgba(227, 238, 252, 0.32);
-  --ring: #e3eefc;
-  --chart-1: #dbe7fa;
-  --chart-2: #aec4e4;
-  --chart-3: #7e99c2;
-  --chart-4: #56709c;
-  --chart-5: #38496a;
-  --track: rgba(210, 226, 248, 0.14);
-  --cell-none: rgba(210, 226, 248, 0.18);
-  --deco: #c9daf3;
+  --frame: #f6ad45;
+  --frame-hover: #ffc46b;
+  --frame-inner: rgba(255, 180, 90, 0.32);
+  --ring: #ff9f43;
+  --chart-1: #ffcf87;
+  --chart-2: #f5a83d;
+  --chart-3: #d97f26;
+  --chart-4: #a85a1a;
+  --chart-5: #6e3c14;
+  --track: rgba(255, 196, 120, 0.14);
+  --cell-none: rgba(255, 196, 120, 0.18);
+  --deco: #ffbe78;
 }
 
 :root.dark[data-style="organization"] {

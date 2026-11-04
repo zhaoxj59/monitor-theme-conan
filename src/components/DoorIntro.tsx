@@ -57,14 +57,18 @@ export function DoorIntro({ enabled, once }: { enabled: boolean; once?: boolean 
     if (seen) setPhase("gone")
   }, [enabled, once])
 
+  // Scroll lock: only while the doors are actually going to show. A
+  // disabled mount (config in flight, door_intro off, or a door_once
+  // session that already saw them) leaves the phase parked at "hold",
+  // so locking on phase alone would freeze the page's scroll forever.
   useEffect(() => {
-    if (phase === "gone") return
+    if (!enabled || phase === "gone") return
     const prev = document.body.style.overflow
     document.body.style.overflow = "hidden"
     return () => {
       document.body.style.overflow = prev
     }
-  }, [phase])
+  }, [enabled, phase])
 
   if (!enabled || phase === "gone") return null
 

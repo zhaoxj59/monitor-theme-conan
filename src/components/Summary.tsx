@@ -106,6 +106,50 @@ function AbnormalTile({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number) =
   )
 }
 
+/**
+ * The busiest tile: the reporting node with the highest CPU right now, named
+ * outright -- the fleet average it replaces hid exactly the one machine an
+ * operator opens the page to find. The whole tile jumps to that node's page,
+ * like the abnormal tile beside it; with nobody reporting it sits plain.
+ */
+function BusiestTile({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number) => void }) {
+  const busiest = nodes
+    .filter((n) => n.online && n.metrics)
+    .reduce<Node | null>((top, n) => (top === null || n.metrics!.cpu > top.metrics!.cpu ? n : top), null)
+  if (!busiest) {
+    return (
+      <Tile icon={Cpu} label="最忙节点">
+        <Big>—</Big>
+        <Sub>暂无在线节点</Sub>
+      </Tile>
+    )
+  }
+  return (
+    <Card
+      className="h-full cursor-pointer gap-0 p-3 transition-colors hover:bg-accent/50"
+      role="button"
+      tabIndex={0}
+      title={`查看 ${busiest.name}`}
+      onClick={() => onOpen(busiest.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onOpen(busiest.id)
+        }
+      }}
+    >
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Cpu className="size-3.5" />
+        最忙节点
+      </div>
+      <Big>
+        <span className="block truncate">{busiest.name}</span>
+      </Big>
+      <Sub>CPU {busiest.metrics!.cpu.toFixed(1)}%</Sub>
+    </Card>
+  )
+}
+
 export function Summary({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number) => void }) {
   const online = nodes.filter((n) => n.online)
   const sum = (pick: (n: Node) => number) => nodes.reduce((t, n) => t + pick(n), 0)
@@ -116,9 +160,6 @@ export function Summary({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number)
   // distinction the plain online flag cannot make.
   const reporting = nodes.filter((n) => n.online && n.metrics)
   const waiting = nodes.filter((n) => n.online && !n.metrics).length
-  const avgCpu = reporting.length
-    ? reporting.reduce((t, n) => t + n.metrics!.cpu, 0) / reporting.length
-    : null
 
   return (
     <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4 xl:grid-cols-6">
@@ -129,10 +170,7 @@ export function Summary({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number)
 
       <AbnormalTile nodes={nodes} onOpen={onOpen} />
 
-      <Tile icon={Cpu} label="平均 CPU">
-        <Big>{avgCpu !== null ? `${avgCpu.toFixed(1)}%` : "—"}</Big>
-        <Sub>{reporting.length ? `基于 ${reporting.length} 台有效上报` : "暂无有效上报"}</Sub>
-      </Tile>
+      <BusiestTile nodes={nodes} onOpen={onOpen} />
 
       <Tile icon={Gauge} label="实时总速率">
         <div className="tnum mt-1.5 space-y-0.5 text-sm font-semibold">

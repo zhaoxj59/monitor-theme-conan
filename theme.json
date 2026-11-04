@@ -1,1 +1,80 @@
-ewogICJhdXRob3IiOiAiR29uemFsZXoiLAogICJjb25maWciOiBbCiAgICB7CiAgICAgICJkZWZhdWx0IjogdHJ1ZSwKICAgICAgImhlbHAiOiAi5omT5byA5oiW5Yi35paw6aG16Z2i5pe25YWI5pKt5pS+5aSn6Zeo5ZCR6YeM5a+55byA55qE6L+H5rih5Yqo55S777yM54K55oyJ5Y+v6Lez6L+HIiwKICAgICAgImtleSI6ICJkb29yX2ludHJvIiwKICAgICAgImxhYmVsIjogIuW8gOmXqOi/h+a4oeWKqOeUuyIsCiAgICAgICJ0eXBlIjogImJvb2xlYW4iCiAgICB9LAogICAgewogICAgICAiZGVmYXVsdCI6IHRydWUsCiAgICAgICJoZWxwIjogIuWFqOmhteiDjOaZr+S4iue8k+e8k+mjmOiQvee/u+i9rOeahOaJkeWFi+eJjO+8jOS9jeS6juWGheWuueWNoeeJh+S5i+S4i++8jOS4jemBruaMoeivu+aVsCIsCiAgICAgICJrZXkiOiAiZmFsbGluZ19jYXJkcyIsCiAgICAgICJsYWJlbCI6ICLmiZHlhYvniYzpo5jokL0iLAogICAgICAidHlwZSI6ICJib29sZWFuIgogICAgfSwKICAgIHsKICAgICAgImRlZmF1bHQiOiB0cnVlLAogICAgICAiaGVscCI6ICLoioLngrnliJfooajkuIrmlrnnmoTmgLvop4jvvJroioLngrnmlbDjgIHlvILluLjvvIjlj6/ngrnlvIDlrprkvY3liLDlhbfkvZPmnI3liqHlmajvvInjgIHlubPlnYcgQ1BV44CB5oC76YCf546H44CB5pys5pyI5oC75rWB6YeP44CB57ut6LS55ZCI6K6hIiwKICAgICAgImtleSI6ICJzaG93X3N1bW1hcnkiLAogICAgICAibGFiZWwiOiAi5pi+56S65rGH5oC7IiwKICAgICAgInR5cGUiOiAiYm9vbGVhbiIKICAgIH0sCiAgICB7CiAgICAgICJkZWZhdWx0IjogImNvbmFuIiwKICAgICAgImhlbHAiOiAi6K6/5a6i5Y+v5Zyo6aG16Z2i5Y+z5LiK6KeS6Ieq6KGM5YiH5o2i5bm26K6w5b+G77yM5q2k5aSE5Yaz5a6a5pyq5YiH5o2i6L+H55qE6K6/5a6i56ys5LiA55y855yL5Yiw5ZOq5aWXIiwKICAgICAgImtleSI6ICJzdHlsZSIsCiAgICAgICJsYWJlbCI6ICLpu5jorqTkuLvpopjpo47moLwiLAogICAgICAib3B0aW9ucyI6IFsKICAgICAgICB7CiAgICAgICAgICAibGFiZWwiOiAi5p+v5Y2X57uP5YW46JOdIiwKICAgICAgICAgICJ2YWx1ZSI6ICJjb25hbiIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJsYWJlbCI6ICLmgKrnm5fln7rlvrfmnIjlhYnpk7YiLAogICAgICAgICAgInZhbHVlIjogImtpZCIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJsYWJlbCI6ICLpu5HooaPnu4Tnu4fmmpflpJznuqIiLAogICAgICAgICAgInZhbHVlIjogIm9yZ2FuaXphdGlvbiIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJ0eXBlIjogInNlbGVjdCIKICAgIH0sCiAgICB7CiAgICAgICJkZWZhdWx0IjogdHJ1ZSwKICAgICAgImhlbHAiOiAi5Y2h54mH5YiX6KGo5LiK5pa555qE5pCc57Si5LiO54q25oCB562b6YCJ5p2h77yM5Y+q6L+H5ruk5Y2h54mH77yM5LiN5b2x5ZON5rGH5oC75LiO5Zyw55CD5LuqIiwKICAgICAgImtleSI6ICJzaG93X3NlYXJjaCIsCiAgICAgICJsYWJlbCI6ICLmmL7npLrmnI3liqHlmajmkJzntKIiLAogICAgICAidHlwZSI6ICJib29sZWFuIgogICAgfSwKICAgIHsKICAgICAgImRlZmF1bHQiOiB0cnVlLAogICAgICAiaGVscCI6ICLoioLngrnnprvnur/jgIHmgaLlpI3kuI7lvILluLjlj5jljJbnmoTml7bpl7Tnur/vvIzorrDlvZXkv53lrZjlnKjorr/lrqLmtY/op4jlmajmnKzlnLAiLAogICAgICAia2V5IjogInNob3dfZXZlbnRzIiwKICAgICAgImxhYmVsIjogIuaYvuekuuahiOS7tuiusOW9lSIsCiAgICAgICJ0eXBlIjogImJvb2xlYW4iCiAgICB9LAogICAgewogICAgICAiZGVmYXVsdCI6IHRydWUsCiAgICAgICJoZWxwIjogIumhteecieeahOOAjOaMh+aMpeS4reW/g+OAjeWkp+Wxj+inhuWbvu+8mueKtuaAgeefqemYteOAgeaOoua1i+eDreWKm+WimeOAgeW8guW4uOS4juacgOaWsOahiOS7tuiusOW9leWQjOWxj++8jOS4juahiOS7tuWimeS4gOmUruWIh+aNoiIsCiAgICAgICJrZXkiOiAiY29tbWFuZF9jZW50ZXIiLAogICAgICAibGFiZWwiOiAi5pi+56S65oyH5oyl5Lit5b+DIiwKICAgICAgInR5cGUiOiAiYm9vbGVhbiIKICAgIH0sCiAgICB7CiAgICAgICJkZWZhdWx0IjogdHJ1ZSwKICAgICAgImhlbHAiOiAi5oyH5oyl5Lit5b+D5YaF55qE5o6i5rWL54Ot5Yqb5aKZ77ya5YWo6YOo6IqC54K5IMOXIOWFqOmDqOaOoua1i+eCueeahOW7tui/n+efqemYte+8jOaMieWQhOe6v+i3r+iHqui6q+Wfuue6v+edgOiJsiIsCiAgICAgICJrZXkiOiAic2hvd19oZWF0bWFwIiwKICAgICAgImxhYmVsIjogIuaMh+aMpeS4reW/g+aYvuekuuaOoua1i+eDreWKm+WimSIsCiAgICAgICJ0eXBlIjogImJvb2xlYW4iCiAgICB9CiAgXSwKICAiZGVzY3JpcHRpb24iOiAi5rex6JOd5L6m5o6i6aOO54q25oCB6aG177ya5LiJ5aWX6KeG6KeJ6aOO5qC844CB5qGI5Lu25aKZ5LiO5oyH5oyl5Lit5b+D5Y+M6KeG5Zu+44CB6Iiw6Zif5oC76KeI44CB5pCc57Si562b6YCJ44CB5o6i5rWL54Ot5Yqb5aKZ44CB5YGl5bq36K+E57qn5LiO5o6o55CG57uT6K6644CB5pyI5bqm5qGI5Lu25oql5ZGK44CB5byA6Zeo6L+H5rih44CB5Zyw55CD5Luq44CB5bu26L+f5LiO6LWE5rqQ54q25oCB5qC844CB5LiJ5q615a+56b2Q57ut6LS56KGMIiwKICAibmFtZSI6ICLlkI3kvqbmjqLmn6/ljZcgwrcg5qGI5Lu25aKZIiwKICAic2hvcnQiOiAiY29uYW4iLAogICJ1cmwiOiAiaHR0cHM6Ly9naXRodWIuY29tL3poYW94ajU5L21vbml0b3ItdGhlbWUtY29uYW4iLAogICJ2ZXJzaW9uIjogIjMuMC40Igp9Cg==
+{
+  "author": "Gonzalez",
+  "config": [
+    {
+      "default": true,
+      "help": "打开或刷新页面时先播放大门向里对开的过渡动画，点按可跳过",
+      "key": "door_intro",
+      "label": "开门过渡动画",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "help": "全页背景上缓缓飘落翻转的扑克牌，位于内容卡片之下，不遮挡读数",
+      "key": "falling_cards",
+      "label": "扑克牌飘落",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "help": "节点列表上方的总览：节点数、异常（可点开定位到具体服务器）、平均 CPU、总速率、本月总流量、续费合计",
+      "key": "show_summary",
+      "label": "显示汇总",
+      "type": "boolean"
+    },
+    {
+      "default": "conan",
+      "help": "访客可在页面右上角自行切换并记忆，此处决定未切换过的访客第一眼看到哪套",
+      "key": "style",
+      "label": "默认主题风格",
+      "options": [
+        {
+          "label": "柯南经典蓝",
+          "value": "conan"
+        },
+        {
+          "label": "怪盗基德月光银",
+          "value": "kid"
+        },
+        {
+          "label": "黑衣组织暗夜红",
+          "value": "organization"
+        }
+      ],
+      "type": "select"
+    },
+    {
+      "default": true,
+      "help": "卡片列表上方的搜索与状态筛选条，只过滤卡片，不影响汇总与地球仪",
+      "key": "show_search",
+      "label": "显示服务器搜索",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "help": "节点离线、恢复与异常变化的时间线，记录保存在访客浏览器本地",
+      "key": "show_events",
+      "label": "显示案件记录",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "help": "页眉的「指挥中心」大屏视图：状态矩阵、探测热力墙、异常与最新案件记录同屏，与案件墙一键切换",
+      "key": "command_center",
+      "label": "显示指挥中心",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "help": "指挥中心内的探测热力墙：全部节点 × 全部探测点的延迟矩阵，按各线路自身基线着色",
+      "key": "show_heatmap",
+      "label": "指挥中心显示探测热力墙",
+      "type": "boolean"
+    }
+  ],
+  "description": "深蓝侦探风状态页：三套视觉风格、案件墙与指挥中心双视图、舰队总览、搜索筛选、探测热力墙、健康评级与推理结论、月度案件报告、开门过渡、地球仪、延迟与资源状态格、三段对齐续费行",
+  "name": "名侦探柯南 · 案件墙",
+  "short": "conan",
+  "url": "https://github.com/zhaoxj59/monitor-theme-conan",
+  "version": "3.0.4"
+}

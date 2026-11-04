@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
  * edges. After a beat the leaves swing into the screen -- rotateY +102° on the
  * left leaf, −102° on the right -- and the layer fades. A tap skips it.
  */
-export function DoorIntro({ enabled }: { enabled: boolean }) {
+export function DoorIntro({ enabled, once }: { enabled: boolean; once?: boolean }) {
   const [phase, setPhase] = useState<"hold" | "open" | "fade" | "gone">("hold")
 
   useEffect(() => {
@@ -30,6 +30,24 @@ export function DoorIntro({ enabled }: { enabled: boolean }) {
   useEffect(() => {
     if (!enabled) setPhase("gone")
   }, [enabled])
+
+  // `door_once`: one showing per browser session. The marker is written as
+  // the first showing begins, so a refresh -- even one mid-intro -- lands
+  // past the doors; a new tab or a reopened browser starts a new session
+  // and shows them again. The config arrives after first paint, so this
+  // runs when `once` lands as well as on mount; storage that refuses (a
+  // locked-down browser) leaves the intro playing every time.
+  useEffect(() => {
+    if (!enabled || !once) return
+    let seen = false
+    try {
+      seen = sessionStorage.getItem("conan-door-once") === "1"
+      if (!seen) sessionStorage.setItem("conan-door-once", "1")
+    } catch {
+      // No session storage to remember with: the doors play as they did.
+    }
+    if (seen) setPhase("gone")
+  }, [enabled, once])
 
   useEffect(() => {
     if (phase === "gone") return

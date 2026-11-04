@@ -9,7 +9,7 @@
       "type": "boolean"
     },
     {
-      "default": false,
+      "default": true,
       "help": "开启后，开门动画在每个浏览器会话里只播放第一次，之后的刷新和站内返回不再重复播放；关闭则每次打开都播。需先开启上方的开门过渡动画才有作用",
       "key": "door_once",
       "label": "开门动画只在首次打开时播放",
@@ -104,5 +104,5 @@
   "name": "名侦探柯南 · 案件墙",
   "short": "conan",
   "url": "https://github.com/zhaoxj59/monitor-theme-conan",
-  "version": "1.2"
+  "version": "1.2.1"
 }

@@ -132,15 +132,23 @@ export function NodeDetail({ node, historyDays, onBack }: {
       </div>
 
       {/* The case banner: the deduction artwork spans the top of every
-          node's file, whichever style is in force -- the wide crop keeps
-          Shinichi, who stands right of frame, in view, and the name and
+          node's file, whichever style is in force, and the name and
           status ride the picture's foot under a `--background` wash, the
-          same tokens the home header's portrait cell is edged with. */}
-      <div className="relative h-[110px] overflow-hidden rounded-2xl border border-border sm:h-[160px]">
+          same tokens the home header's portrait cell is edged with. The
+          art (1440x1050) is nearly square against a wide banner, so cover
+          binds on the width and the only say is which horizontal band
+          shows: at 110/160px that band was a sixth of the picture and cut
+          every suspect card and most of Shinichi. The banner now stands
+          150/320px and the band rides higher -- on a phone (328px wide,
+          picture rendered ~239px tall) it takes in y 5%-68%, every card
+          and Shinichi's face whole; on a wide screen (~1352px, picture
+          ~986px tall) y 23%-55%, the middle cards and his eyes and mouth,
+          the top and bottom cards the price of a banner that stays one. */}
+      <div className="relative h-[150px] overflow-hidden rounded-2xl border border-border sm:h-[320px]">
         <img
           src="/assets/header-detail.jpg"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover object-[72%_50%]"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_14%] sm:object-[50%_34%]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/35 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-x-2 gap-y-1 p-3 sm:p-4">

@@ -138,31 +138,53 @@ export type StyleName = "conan" | "kid" | "organization"
 
 export const STYLES: { name: StyleName; label: string; desc: string; mark: string }[] = [
   { name: "conan", label: "柯南经典蓝", desc: "侦探蓝 · 案件档案", mark: "🔎" },
-  { name: "kid", label: "怪盗基德月光银", desc: "月光银 · 魔术预告", mark: "♠" },
+  { name: "kid", label: "怪盗基德落日橙", desc: "落日橙 · 魔术预告", mark: "♠" },
   { name: "organization", label: "黑衣组织暗夜红", desc: "暗夜红 · 秘密档案", mark: "◈" },
 ]
 
 const isStyle = (v: unknown): v is StyleName => v === "conan" || v === "kid" || v === "organization"
 
+/** The falling cards' pace by the operator's word for it; standard is the pace the cards have always fallen at. */
+const CARD_SPEEDS: Record<string, number> = { slow: 0.6, normal: 1, fast: 1.6 }
+
+/** Whether the last config seen had `door_once` on, remembered across loads (see the door in App). */
+function doorOnceHint(): boolean {
+  try {
+    return localStorage.getItem("conan-door-once-cfg") === "1"
+  } catch {
+    return false
+  }
+}
+
 /**
  * The header board's portrait cell follows the visual style, so the picture
  * a visitor sees is cut from the same cloth as the palette under it: the
  * clock-tower portrait for the classic blue, the organisation face-off for
- * the dark red, and the Kid city portrait the silver style has always worn.
- * The cell is tall and narrow against wide art, so each picture names the
+ * the dark red, and a warm golden-backlit portrait for the sunset orange.
+ * The cell is wide and short against tall art, so each picture names the
  * point `object-cover` must keep -- the focal subject -- rather than
- * trusting the centre: Shinichi stands mid-frame and low in the clock-tower
- * art, and left of frame in the organisation art.
+ * trusting the centre, and the standing rule for every one of them is
+ * that the subject's head stays whole in the frame: the cell's band is a
+ * fraction of the picture's height, and a centre crop spends it on
+ * torsos. Shinichi's head rides at y 27-39% of the clock-tower art, so
+ * its band is centred on his face (38%), not his belt (the 60% the
+ * narrow cell once used, which cut his eyes away once the cell widened);
+ * The sunset portrait (1080×1873) replaced the blue-toned Kid city art in
+ * 1.2 -- it clashed with the amber palette, and the city picture had no
+ * other reference, so the asset was dropped -- its head spans y 10-47%
+ * with the eyes at y 33-38%, wider than the ~21% desktop band, so the
+ * responsive focal keeps the whole head on a phone (25%, band 12-65%) and
+ * the full face including the chin on desktop (33%, band 26-47%), where
+ * only the crown is trimmed.
  */
 const HEADER_ART: Record<StyleName, { src: string; pos?: string }> = {
-  conan: { src: "/assets/style-conan.jpg", pos: "object-[50%_60%]" },
-  kid: { src: "/assets/kid-city.jpg" },
-  // The organisation art is the one wide picture of the three and the only
-  // one whose header cell goes wide (see the board below), so its focal
-  // point is responsive: centred horizontally while the cell is still
-  // narrow enough to crop the sides, then riding high once the cell is
-  // wider than the art and the crop turns vertical, so the faces along
-  // the top -- Shinichi's and Gin's -- keep the frame.
+  conan: { src: "/assets/style-conan.jpg", pos: "object-[50%_38%]" },
+  kid: { src: "/assets/style-kid.jpg", pos: "object-[50%_25%] sm:object-[50%_33%]" },
+  // The organisation art is the one wide picture of the three, so its
+  // focal point is responsive: centred horizontally while the cell is
+  // still narrow enough to crop the sides, then riding high once the
+  // cell is wider than the art and the crop turns vertical, so the faces
+  // along the top -- Shinichi's and Gin's -- keep the frame.
   organization: { src: "/assets/style-organization.jpg", pos: "object-[40%_50%] sm:object-[50%_20%]" },
 }
 
@@ -313,6 +335,18 @@ export default function App() {
   const [density, setDensity] = useDensity()
   const [mode, toggleMode] = useMode()
   const [style, setStyle] = useStyle(config?.style)
+  // Whether this browser session has already had its door showing, read
+  // once at mount: it lets App keep a `door_once` refresh from rendering
+  // the doors at all (see the door below), rather than mounting them and
+  // letting DoorIntro's own check unmount them a frame later -- a frame
+  // that, on a slow load, is long enough to see.
+  const [doorSeen] = useState(() => {
+    try {
+      return sessionStorage.getItem("conan-door-once") === "1"
+    } catch {
+      return false
+    }
+  })
 
   const loadMe = useCallback(() => {
     return api<Me>("/me")
@@ -348,7 +382,27 @@ export default function App() {
     document.title = [selected?.name, me?.site_name || "Monitor"].filter(Boolean).join(" · ")
   }, [selected?.name, me?.site_name])
 
-  const door = <DoorIntro enabled={config ? config.door_intro !== false : true} />
+  // `door_once` rides a hint from the last visit until the config lands:
+  // the config answers a beat after first paint, and without the hint a
+  // refresh under `door_once` would start the doors before the setting
+  // arrived to stop them. The hint only ever pre-arms the session check
+  // in DoorIntro -- a fresh session still plays, hint or not.
+  useEffect(() => {
+    if (!config) return
+    try {
+      localStorage.setItem("conan-door-once-cfg", config.door_once === true ? "1" : "0")
+    } catch {
+      // No storage: the config's own arrival covers it, a beat later.
+    }
+  }, [config])
+
+  const doorOnceArmed = config ? config.door_once === true : doorOnceHint()
+  const door = (
+    <DoorIntro
+      enabled={(config ? config.door_intro !== false : true) && !(doorOnceArmed && doorSeen)}
+      once={doorOnceArmed}
+    />
+  )
   // Between the backdrop and the content in DOM order, so the cards drift
   // behind the translucent cards and panels rather than over the figures.
   const falling = (
@@ -356,6 +410,7 @@ export default function App() {
       enabled={config ? config.falling_cards !== false : true}
       dark={mode === "dark"}
       paintKey={`${mode}:${style}`}
+      speed={CARD_SPEEDS[config?.cards_speed as string] ?? 1}
     />
   )
 
@@ -460,67 +515,36 @@ export default function App() {
             <CommandCenter nodes={sorted} onOpen={go} showHeatmap={config.show_heatmap !== false} />
           ) : (
             <>
-              {/* The header case board, in three columns at every width: the
-                  city portrait, the motto in a column of its own, then the
-                  globe in a cell of its own. The words and the canvas are
-                  flex siblings, so their boxes can never overlap -- the
-                  motto used to sit on top of the globe's cell and the
-                  sphere's rim ran underneath it on wide screens. The one
-                  exception is the organisation style: its face-off art is
-                  wide, and in the narrow first column the organisation
-                  half of the picture was cropped away entirely, so there
-                  the motto column steps aside and the art takes the first
-                  two columns' width whole, the globe keeping the exact
-                  cell it had. The widths below are that split restated:
-                  portrait plus motto (28 + 72*50% on small screens, 30 +
-                  70*38% from sm up), globe untouched. */}
+              {/* The header case board: the style's artwork takes the
+                  first two of the old three columns whole and the globe
+                  keeps the third, at every width and in every style. The
+                  board used to carry a motto column between portrait and
+                  globe; it cost the narrower portraits their subjects and
+                  the wide organisation face-off its entire right half, so
+                  the words stepped aside -- first for the organisation in
+                  3.0.4, then for all three. The widths below are the old
+                  split restated: portrait plus motto (28 + 72*50% on small
+                  screens, 30 + 70*38% from sm up), globe untouched. The
+                  portrait cell also drops the fade-to-background its narrow
+                  self wore: against a wide cell the gradient only ate the
+                  picture's right edge. */}
               <section className="flex h-48 overflow-hidden rounded-2xl border border-border sm:h-64">
-                {style === "organization" ? (
-                  <>
-                    <div className="relative w-[64%] shrink-0 sm:w-[56.6%]">
-                      <img
-                        key={style}
-                        src={HEADER_ART[style].src}
-                        alt=""
-                        className={cn("absolute inset-0 h-full w-full object-cover", HEADER_ART[style].pos)}
-                      />
-                    </div>
-                    <div
-                      className={cn(
-                        "relative min-w-0 flex-1",
-                        mode === "light" ? "bg-background/50" : "bg-background/55",
-                      )}
-                    >
-                      <Globe nodes={sorted} onOpen={go} dark={mode === "dark"} paintKey={`${mode}:${style}`} />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="relative w-[28%] shrink-0 sm:w-[30%]">
-                      <img
-                        key={style}
-                        src={HEADER_ART[style].src}
-                        alt=""
-                        className={cn("absolute inset-0 h-full w-full object-cover", HEADER_ART[style].pos)}
-                      />
-                      <div
-                        className={cn(
-                          "absolute inset-0 bg-gradient-to-r from-transparent",
-                          mode === "light" ? "to-background/70" : "to-background/60",
-                        )}
-                      />
-                    </div>
-                    <div className={cn("flex min-w-0 flex-1", mode === "light" ? "bg-background/50" : "bg-background/55")}>
-                      <div className="flex w-[50%] shrink-0 flex-col justify-center gap-1 p-2.5 sm:w-[38%] sm:p-5">
-                        <p className="text-[13px] font-semibold tracking-[0.14em] sm:text-2xl sm:tracking-[0.2em]">真相只有一个</p>
-                        <p className="text-[10px] leading-snug text-muted-foreground sm:text-xs">拖动地球仪 · 点击红点查看节点</p>
-                      </div>
-                      <div className="relative min-w-0 flex-1">
-                        <Globe nodes={sorted} onOpen={go} dark={mode === "dark"} paintKey={`${mode}:${style}`} />
-                      </div>
-                    </div>
-                  </>
-                )}
+                <div className="relative w-[64%] shrink-0 sm:w-[56.6%]">
+                  <img
+                    key={style}
+                    src={HEADER_ART[style].src}
+                    alt=""
+                    className={cn("absolute inset-0 h-full w-full object-cover", HEADER_ART[style].pos)}
+                  />
+                </div>
+                <div
+                  className={cn(
+                    "relative min-w-0 flex-1",
+                    mode === "light" ? "bg-background/50" : "bg-background/55",
+                  )}
+                >
+                  <Globe nodes={sorted} onOpen={go} dark={mode === "dark"} paintKey={`${mode}:${style}`} />
+                </div>
               </section>
 
               <NodeList

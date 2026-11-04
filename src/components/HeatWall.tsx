@@ -32,6 +32,19 @@ function useFleetPing(nodes: Node[]): Map<number, PingData | null> {
 type Cell = { text: string; bg: string; fg: string; title: string }
 
 /**
+ * Zero-width break opportunities for a node name: after every hyphen and
+ * at every CJK/Latin seam, so a long name folds inside its column at a
+ * seam rather than being cut with an ellipsis -- or through the middle
+ * of a Latin word, which plain break-all would do to "premium".
+ */
+function breakable(name: string): string {
+  return name
+    .replace(/-/g, "-\u200b")
+    .replace(/([\u4e00-\u9fff])([A-Za-z0-9])/g, "$1\u200b$2")
+    .replace(/([A-Za-z0-9])([\u4e00-\u9fff])/g, "$1\u200b$2")
+}
+
+/**
  * One probe on one node: its most recent answered latency, coloured
  * against its own baseline by the same classes the card strips use. A
  * newest bucket that never answered is a timeout, in the lost colour;
@@ -61,7 +74,9 @@ function cellOf(probe: ProbeSeries | undefined): Cell {
  * The fleet's lines on one wall: a row per node, a column per probe --
  * the union over the fleet, busiest first -- each cell the probe's
  * current latency in its baseline colours. Wide fleets of probes scroll
- * sideways rather than crush the cells.
+ * sideways rather than crush the cells, and no name is ever truncated:
+ * probe names fold character by character, node names at their seams,
+ * so a long name costs a taller row rather than its tail.
  */
 export function HeatWall({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number) => void }) {
   const [collapsed, setCollapsed] = useState(false)
@@ -94,7 +109,7 @@ export function HeatWall({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number
           >
             <span />
             {columns.map((name) => (
-              <span key={name} className="truncate px-1 text-center text-[11px] text-muted-foreground" title={name}>
+              <span key={name} className="px-1 text-center text-[11px] leading-tight whitespace-normal break-all text-muted-foreground" title={name}>
                 {name}
               </span>
             ))}
@@ -106,10 +121,10 @@ export function HeatWall({ nodes, onOpen }: { nodes: Node[]; onOpen: (id: number
                   key={`n${n.id}`}
                   type="button"
                   onClick={() => onOpen(n.id)}
-                  className="truncate pr-2 text-left text-xs font-medium transition-opacity hover:opacity-70"
+                  className="pr-2 text-left text-xs leading-snug font-medium whitespace-normal [overflow-wrap:break-word] transition-opacity hover:opacity-70"
                   title={n.name}
                 >
-                  {n.name}
+                  {breakable(n.name)}
                 </button>,
                 ...columns.map((name) => {
                   const cell = cellOf(byName.get(name))

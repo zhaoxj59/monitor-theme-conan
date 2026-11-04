@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { api, groupsOf, useNodes, type Node } from "@/lib/api"
 import { loadConfig } from "@/lib/config"
 import { observeNodes } from "@/lib/events"
+import { dismissSplash } from "@/lib/splash"
 import { cn } from "@/lib/utils"
 
 // `history_days` is absent from hubs predating the hourly tier, which kept a
@@ -146,15 +147,6 @@ const isStyle = (v: unknown): v is StyleName => v === "conan" || v === "kid" || 
 
 /** The falling cards' pace by the operator's word for it; standard is the pace the cards have always fallen at. */
 const CARD_SPEEDS: Record<string, number> = { slow: 0.6, normal: 1, fast: 1.6 }
-
-/** Whether the last config seen had `door_once` on, remembered across loads (see the door in App). */
-function doorOnceHint(): boolean {
-  try {
-    return localStorage.getItem("conan-door-once-cfg") === "1"
-  } catch {
-    return false
-  }
-}
 
 /**
  * The header board's portrait cell follows the visual style, so the picture
@@ -382,32 +374,33 @@ export default function App() {
     document.title = [selected?.name, me?.site_name || "Monitor"].filter(Boolean).join(" · ")
   }, [selected?.name, me?.site_name])
 
-  // `door_once` rides a hint from the last visit until the config lands:
-  // the config answers a beat after first paint, and without the hint a
-  // refresh under `door_once` would start the doors before the setting
-  // arrived to stop them. The hint only ever pre-arms the session check
-  // in DoorIntro -- a fresh session still plays, hint or not.
+  // Nothing animated may start before the config lands. Both switches
+  // below used to default to on while `config` was still null, so on a
+  // refresh the doors swung and the cards fell for as long as the config
+  // request took -- and with the operator's switch off, that flash WAS
+  // the animation they had turned off, replayed on every load. Until the
+  // config answers, the shell splash (a still photograph) covers the
+  // screen; the moment it lands, the switched-off case has never mounted
+  // a single animated node. A side effect worth naming: this retires the
+  // old `door_once` localStorage hint, which existed only to cover this
+  // same gap.
+  const doorOnceArmed = config?.door_once === true
+  const doorWillPlay = config !== null && config.door_intro !== false && !(doorOnceArmed && doorSeen)
+
+  // The splash leaves the way the config says: fading into the doors
+  // when they are about to play, removed outright -- no fade, no
+  // movement -- when they are not.
   useEffect(() => {
     if (!config) return
-    try {
-      localStorage.setItem("conan-door-once-cfg", config.door_once === true ? "1" : "0")
-    } catch {
-      // No storage: the config's own arrival covers it, a beat later.
-    }
-  }, [config])
+    dismissSplash(!doorWillPlay)
+  }, [config, doorWillPlay])
 
-  const doorOnceArmed = config ? config.door_once === true : doorOnceHint()
-  const door = (
-    <DoorIntro
-      enabled={(config ? config.door_intro !== false : true) && !(doorOnceArmed && doorSeen)}
-      once={doorOnceArmed}
-    />
-  )
+  const door = <DoorIntro enabled={doorWillPlay} once={doorOnceArmed} />
   // Between the backdrop and the content in DOM order, so the cards drift
   // behind the translucent cards and panels rather than over the figures.
   const falling = (
     <FallingCards
-      enabled={config ? config.falling_cards !== false : true}
+      enabled={config !== null && config.falling_cards !== false}
       dark={mode === "dark"}
       paintKey={`${mode}:${style}`}
       speed={CARD_SPEEDS[config?.cards_speed as string] ?? 1}
